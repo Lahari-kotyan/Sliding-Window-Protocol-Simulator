@@ -1,48 +1,108 @@
-# Computer Networks Sliding Window Protocol Simulator
+# Sliding Window Protocol Simulator
 
-An interactive, graphical **Sliding Window Protocol Simulator** developed as a Computer Networks student academic project. The application demonstrates, animates, and compares three fundamental transport/data-link layer flow control protocols:
+An interactive Computer Networks simulation tool for visualizing and analyzing reliable data transmission using **One-Bit Sliding Window, Go-Back-N, and Selective Repeat** protocols.
 
-1. **One-Bit Sliding Window (Alternating Bit Protocol)**
-2. **Go-Back-N (GBN)**
-3. **Selective Repeat (SR)**
-
-Available as both a **Python Tkinter Desktop Application** and a **Web Application (Vercel Ready)**.
+The simulator allows users to experiment with different window sizes, packet-loss conditions, retransmissions, acknowledgements, and network parameters while observing protocol behavior and performance metrics.
 
 ---
 
-## 🌐 Deploy to Vercel (Web Version)
+## 📌 Overview
 
-The project includes a web version (`index.html`, `css/`, `js/`, `vercel.json`) equipped with HTML5 Canvas animation and Chart.js graphs ready for 1-click deployment on Vercel.
+The **Sliding Window Protocol Simulator** is a Python-based desktop application designed to provide an interactive understanding of sliding window protocols used in computer networks.
 
-### Method 1: Deploy using Vercel CLI
-Run the following command in your terminal inside the project directory:
-```bash
-npx vercel
-```
-Follow the interactive prompts:
-* **Set up and deploy?** `Y`
-* **Which scope?** (Select your account)
-* **Link to existing project?** `N`
-* **What's your project's name?** `sliding-window-simulator`
-* **In which directory is your code located?** `./`
+Instead of relying only on theoretical diagrams, the simulator provides a visual environment where users can observe:
 
-Vercel will output your live URL (e.g. `https://sliding-window-simulator.vercel.app`).
+- Frame transmission
+- Acknowledgement handling
+- Packet loss
+- Retransmissions
+- Sliding window movement
+- Timeout behavior
+- Protocol efficiency
+- Throughput and transmission statistics
 
-### Method 2: Deploy via GitHub / Vercel Dashboard
-1. Push this project folder to a repository on GitHub / GitLab.
-2. Go to [vercel.com/new](https://vercel.com/new) and import the repository.
-3. Click **Deploy**. Vercel will automatically detect `vercel.json` and publish your site!
+The project is intended for **Computer Networks learning, demonstrations, laboratory assignments, and protocol analysis**.
 
 ---
 
-## 💻 Run Desktop Version (Python Tkinter)
+## 🚀 Features
 
-Run:
-```bash
-python main.py
-```
+### Supported Protocols
 
-To run unit tests:
-```bash
-python -m unittest tests/test_protocols.py
-```
+- **One-Bit Sliding Window**
+- **Go-Back-N ARQ**
+- **Selective Repeat ARQ**
+
+### Network Simulation
+
+- Configurable window size
+- Configurable number of frames
+- Packet/frame loss simulation
+- ACK loss simulation
+- Retransmission handling
+- Timeout simulation
+- Variable network conditions
+
+### Performance Analysis
+
+The simulator provides performance information such as:
+
+- Total transmissions
+- Retransmissions
+- Packets lost
+- Unique packets lost
+- ACKs received
+- Total simulation time
+- Frame throughput
+- Protocol efficiency
+
+### Interactive GUI
+
+- User-friendly graphical interface
+- Real-time protocol visualization
+- Simulation controls
+- Network configuration
+- Performance results
+- Protocol comparison
+
+---
+
+## 🖥️ Application Preview
+
+The simulator provides a graphical interface for configuring network conditions and observing the behavior of different sliding window protocols.
+
+---
+
+## 🛠️ Technologies Used
+
+- **Python**
+- **Tkinter**
+- **Matplotlib**
+- **NumPy**
+- **Pandas**
+- **PyInstaller**
+
+---
+
+## 📂 Project Structure
+
+```text
+Sliding-Window-Protocol-Simulator/
+│
+├── gui/
+│   ├── main_window.py
+│   └── ...
+│
+├── protocols/
+│   ├── one_bit_sliding_window.py
+│   ├── go_back_n.py
+│   ├── selective_repeat.py
+│   └── ...
+│
+├── simulation/
+│   └── ...
+│
+├── main.py
+├── requirements.txt
+├── README.md
+└── LICENSE
