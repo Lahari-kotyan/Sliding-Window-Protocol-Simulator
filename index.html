@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sliding Window Protocol Simulator | Computer Networks Academic Project</title>
+  <meta name="description" content="Interactive visual simulator for One-Bit, Go-Back-N, and Selective Repeat sliding window protocols with discrete event simulation, packet loss modeling, and performance comparison charts.">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <header>
+    <h1>⚡ Sliding Window Protocol Simulator</h1>
+    <span class="badge">Vercel Ready | Academic Project</span>
+  </header>
+
+  <main>
+    <!-- Sidebar Control Panel -->
+    <aside class="sidebar">
+      <h2>Simulation Parameters</h2>
+
+      <div class="form-group">
+        <label for="protocolSelect">Protocol Strategy</label>
+        <select id="protocolSelect">
+          <option value="Go-Back-N" selected>Go-Back-N (GBN)</option>
+          <option value="One-Bit Sliding Window">One-Bit Sliding Window</option>
+          <option value="Selective Repeat">Selective Repeat (SR)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="windowSize">Window Size (N)</label>
+        <input type="number" id="windowSize" value="4" min="1">
+      </div>
+
+      <div class="form-group">
+        <label for="numFrames">Total Frames</label>
+        <input type="number" id="numFrames" value="10" min="1">
+      </div>
+
+      <div class="form-group">
+        <label for="transDelay">Frame Trans Delay (ms)</label>
+        <input type="number" id="transDelay" value="100" min="1">
+      </div>
+
+      <div class="form-group">
+        <label for="ackDelay">ACK Delay (ms)</label>
+        <input type="number" id="ackDelay" value="50" min="1">
+      </div>
+
+      <div class="form-group">
+        <label for="timeout">Sender Timeout (ms)</label>
+        <input type="number" id="timeout" value="300" min="1">
+      </div>
+
+      <div class="form-group">
+        <label for="pktLoss">Packet Loss Rate (%)</label>
+        <input type="number" id="pktLoss" value="10" min="0" max="100">
+      </div>
+
+      <div class="form-group">
+        <label for="ackLoss">ACK Loss Rate (%)</label>
+        <input type="number" id="ackLoss" value="5" min="0" max="100">
+      </div>
+
+      <div class="form-group">
+        <label for="seedInput">Random Seed (Optional)</label>
+        <input type="number" id="seedInput" value="42">
+      </div>
+
+      <div class="btn-group">
+        <button id="btnStart" class="btn btn-primary">▶ Start Simulation</button>
+        <button id="btnPause" class="btn btn-secondary" disabled>⏸ Pause</button>
+        <button id="btnResume" class="btn btn-secondary" disabled>▶ Resume</button>
+        <button id="btnReset" class="btn btn-secondary">↺ Reset</button>
+        <button id="btnCompare" class="btn btn-accent">📊 Compare All Protocols</button>
+      </div>
+
+      <div class="form-group" style="margin-top: 0.5rem;">
+        <label for="speedSlider">Animation Speed</label>
+        <input type="range" id="speedSlider" min="10" max="800" value="510">
+      </div>
+    </aside>
+
+    <!-- Content Area -->
+    <section class="content-area">
+      <nav class="nav-tabs">
+        <button class="tab-btn active" data-tab="tabSim">Interactive Canvas</button>
+        <button class="tab-btn" data-tab="tabResults">Dashboard & Export</button>
+        <button class="tab-btn" data-tab="tabCompare">Protocol Comparison & Charts</button>
+        <button class="tab-btn" data-tab="tabGuide">Protocol Guide & Theory</button>
+      </nav>
+
+      <!-- Tab 1: Interactive Canvas & Logs -->
+      <div id="tabSim" class="tab-content active">
+        <div class="canvas-card">
+          <div class="canvas-header">
+            <span style="font-weight: 600; font-size: 0.95rem;">Network Transmission Channel Animation</span>
+          </div>
+          <canvas id="simCanvas"></canvas>
+        </div>
+
+        <div class="log-card">
+          <div style="font-weight: 600; font-size: 0.9rem; margin-bottom: 0.5rem;">Live Event Console</div>
+          <div id="logConsole" class="log-console"></div>
+        </div>
+      </div>
+
+      <!-- Tab 2: Dashboard & Export -->
+      <div id="tabResults" class="tab-content">
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <span class="title">Total Transmissions</span>
+            <span id="mTotalTrans" class="value">0</span>
+          </div>
+          <div class="metric-card">
+            <span class="title">Retransmissions</span>
+            <span id="mRetrans" class="value">0</span>
+          </div>
+          <div class="metric-card">
+            <span class="title">Packets Lost</span>
+            <span id="mPktLost" class="value">0</span>
+          </div>
+          <div class="metric-card">
+            <span class="title">ACKs Received</span>
+            <span id="mAcksRx" class="value">0</span>
+          </div>
+          <div class="metric-card">
+            <span class="title">Total Time</span>
+            <span id="mTotalTime" class="value">0 ms</span>
+          </div>
+          <div class="metric-card">
+            <span class="title">Throughput</span>
+            <span id="mThroughput" class="value">0 fps</span>
+          </div>
+          <div class="metric-card">
+            <span class="title">Efficiency</span>
+            <span id="mEfficiency" class="value">0%</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 1rem;">
+          <button id="btnExportCsv" class="btn btn-primary" style="width: auto;">📥 Export Results to CSV</button>
+        </div>
+      </div>
+
+      <!-- Tab 3: Comparison & Charts -->
+      <div id="tabCompare" class="tab-content">
+        <div class="table-card">
+          <h3 style="margin-bottom: 0.75rem; font-size: 1rem;">Protocol Comparison Summary</h3>
+          <table class="comp-table">
+            <thead>
+              <tr>
+                <th>Metric</th>
+                <th>One-Bit SW</th>
+                <th>Go-Back-N</th>
+                <th>Selective Repeat</th>
+              </tr>
+            </thead>
+            <tbody id="compTableBody"></tbody>
+          </table>
+        </div>
+
+        <div class="charts-grid">
+          <div class="chart-card">
+            <canvas id="comparisonChart"></canvas>
+          </div>
+          <div class="chart-card">
+            <canvas id="sensitivityChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 4: Guide -->
+      <div id="tabGuide" class="tab-content">
+        <div class="guide-card">
+          <h2>Computer Networks Protocol Reference Guide</h2>
+          
+          <h3>1. One-Bit Sliding Window (Alternating Bit)</h3>
+          <p>Operates with a strict window size of N = 1. Only one frame is allowed in transit. Sequence numbers alternate between 0 and 1. Retransmits the frame upon timeout.</p>
+
+          <h3>2. Go-Back-N (GBN)</h3>
+          <p>Allows up to N unacknowledged frames in transit. Uses cumulative acknowledgements. Discards out-of-order frames at the receiver. Single base timer retransmits all unacknowledged frames in the window upon timeout.</p>
+
+          <h3>3. Selective Repeat (SR)</h3>
+          <p>Sender and Receiver both maintain a window of size N. Receiver buffers out-of-order frames. Individual ACKs are returned. Sender maintains per-frame timers and retransmits only missing frames.</p>
+
+          <h3>4. Metric Calculations</h3>
+          <ul>
+            <li><strong>Throughput (fps):</strong> Delivered Frames / Total Time (seconds)</li>
+            <li><strong>Efficiency (%):</strong> (Original Unique Frames / Total Transmissions) × 100%</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/event.js"></script>
+  <script src="js/network.js"></script>
+  <script src="js/protocols.js"></script>
+  <script src="js/simulator.js"></script>
+  <script src="js/canvas.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
